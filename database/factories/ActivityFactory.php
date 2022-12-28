@@ -19,8 +19,8 @@ class ActivityFactory extends Factory
     {
         return [
 
-            'title' => fake()->sentence(),
-            'description' => fake()->paragraph(),
+            'title' => fake()->sentence(4),
+            'description' => fake()->paragraph(2),
             'dateFrom' => fake()->dateTimeBetween('now','+5 days'),
             'dateTo' => fake()->dateTimeBetween('now','+15 days'),
             'max_quantity_people' => fake()->randomDigitNotNull(),
