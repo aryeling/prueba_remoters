@@ -1,6 +1,6 @@
 # Prueba Remoters
 
-Desarrollo de la prueba de backend para postular a la vacante de Desarrollador Laravel
+Desarrollo de la prueba para postular a la vacante de Desarrollador Laravel
 
 
 ## Requerimientos
