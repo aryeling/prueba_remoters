@@ -27,104 +27,51 @@
         <div class="container-fluid" >
             <div class="row">
                 <div class="col-md-12 text-end">
-                    <a href="{{route('activitiesbooking.show')}}" class="btn btn-link btn-sm">Lista de reservaciones</a>
+                    <a href="/" class="btn btn-link btn-sm">Actividades</a>
                 </div>
-            </div>
-            <div class="row" id="listActivity">
-                <div class="col-md-12">
-                    <div class="alert alert-primary">
-                        Seleccione una fecha y la cantidad de personas
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <form class="form row" action="{{route('activities.dateqty')}}">
-                    @csrf
-                    <div class="col-5 col-sm-3 col-md-3">
-                        <div class="form-floating mb-3">
-                            <input type="date" class="form-control form-control-sm" min="{{date('Y-m-d')}}" id="activity_date" placeholder="Fecha de Actividad" name="activity_date" required autofocus value="{{($_GET['activity_date']) ?? ''}}">
-                            <label for="activity_date">Fecha Actividad</label>
-                            @error('activity_date') <span class="error text-danger">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-                    <div class="col-5 col-sm-3 col-md-3">
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control form-control-sm" id="qty_people" min="1" pattern="^[1-9]+" name="qty_people" placeholder="Cantidad de personas" required autofocus value="{{($_GET['qty_people']) ?? ''}}">
-                            <label for="qty_people">Cantidad de personas</label>
-                            @error('qty_people') <span class="error text-danger">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-                    <div class="col-2 col-sm-3 col-md-3 py-2">
-                        <button type="submit" class="btn btn-primary">
-                            <b class="d-none d-sm-block">Buscar</b>
-                            <b class="d-block d-sm-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                </svg>
-                            </b>
-                        </button>
-                    </div>
-                </form>
             </div>
 
-            @if (Session::get('success'))
-                <div class="alert alert-success">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-            @if(!empty($activities) && $activities->count() > 0)
+
+
+            @if(!empty($activities_booking) && $activities_booking->count() > 0)
                 <div class="row" id="listActivity">
                     <div class="col-md-12 table-responsive">
+                        <legend>Lista de Reservaciones</legend>
                         <table class="table table-hover table-striped table-sm">
                             <thead class="table-success text-center">
                                 <tr>
-                                <th scope="col">Popularidad</th>
-                                <th scope="col">Titulo</th>
-                                <th scope="col">Fecha Desde</th>
-                                <th scope="col">Fecha Hasta</th>
-                                <th scope="col">Precio</th>
-                                <th scope="col">Cant. Personas</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Opciones</th>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Actividad</th>
+                                    <th scope="col">Fecha Reservada</th>
+                                    <th scope="col">Cant. Personas</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Fecha compra</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($activities as $activity )
+                                @foreach ($activities_booking as $activity_booking )
                                     <tr class="bg-gray-100 border-b">
-                                        <td class="text-center">{{ $activity->popularity }}</td>
-                                        <td>{{ $activity->title }}</td>
-                                        <td class="text-center">{{ \Carbon\Carbon::parse($activity->dateFrom)->format('d-m-Y')}}</td>
-                                        <td class="text-center">{{ \Carbon\Carbon::parse($activity->dateTo)->format('d-m-Y')  }}</td>
-                                        <td class="text-end">{{ number_format($activity->price_person, 2, ',', '.') }}</td>
-                                        <td class="text-end">{{ $activity->max_quantity_people }}</td>
-                                        <td class="text-end">{{ number_format($activity->price_person * $activity->max_quantity_people, 2, ',', '.') }}</td>
-                                        <td class="text-center">
-                                            <a href="#" onclick="showActivity('{{$activity->id}}')" id="showMore" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Ver más</a>
-                                            @if (Route::currentRouteName() == 'activities.dateqty')
-                                                <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-primary btn-sm">Comprar</a>
-                                            @endif
-                                        </td>
-                                        <form id="logout-form" method="POST" action="{{route('activities.buy',['id' => $activity->id ])}}">
-                                            @csrf
-                                            <input type="hidden" id="activity_date" name="activity_date" value="{{($_GET['activity_date']) ?? ''}}">
-                                            <input type="hidden" id="qty_people" name="qty_people" value="{{($_GET['qty_people']) ?? ''}}">
-                                        </form>
+                                        <td>{{ $activity_booking->id }}</td>
+                                        <td>{{ $activity_booking->activity->title }}</td>
+                                        <td class="text-center">{{ \Carbon\Carbon::parse($activity_booking->activity_booking_date)->format('d-m-Y')}}</td>
+                                        <td class="text-end">{{ $activity_booking->person_quantity }}</td>
+                                        <td class="text-end">{{ number_format($activity_booking->activity->price_person * $activity_booking->person_quantity, 2, ',', '.') }}</td>
+
+                                        <td class="text-center">{{ \Carbon\Carbon::parse($activity_booking->created_at)->format('d-m-Y')  }}</td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    {{ $activities->links() }}
+                    {{ $activities_booking->links() }}
                 </div>
-                </div>
+
             @else
                 <div class="row" id="listActivity">
                     <div class="col-md-12">
                         <div class="alert alert-danger">
                             No se encontraron resultados
-                        </div>
-                        <div class="text-center">
-                            <a href="/" class="btn btn-secondary btn-sm">Regresar</a>
                         </div>
                     </div>
                 </div>

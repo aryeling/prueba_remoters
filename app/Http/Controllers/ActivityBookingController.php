@@ -25,7 +25,8 @@ class ActivityBookingController extends Controller
      */
     public function index()
     {
-        return $this->activity_booking_interface->all();
+        $activities_booking = $this->activity_booking_interface->all();
+        return view('activities-booking', ['activities_booking' => $activities_booking]);
     }
 
     /**

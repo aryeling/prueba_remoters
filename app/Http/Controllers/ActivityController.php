@@ -20,9 +20,9 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        //$activities = $this->activityInterface->all();
+        $activities = $this->activityInterface->all();
 
-        return view('activities');
+        return view('activities', ['activities' => $activities]);
     }
 
     /**

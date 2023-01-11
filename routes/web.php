@@ -19,3 +19,4 @@ Route::get('/activities', [ActivityController::class, 'index'])->name('activitie
 Route::get('/activities/getByDateAndQty', [ActivityController::class, 'getByDateAndQtyPeople'])->name('activities.dateqty');
 Route::post('/activities/buy/{id}', [ActivityBookingController::class, 'store'])->name('activities.buy');
 Route::post('/activities/get', [ActivityController::class, 'show'])->name('activities.show');
+Route::get('/activities/bookingList', [ActivityBookingController::class, 'index'])->name('activitiesbooking.show');

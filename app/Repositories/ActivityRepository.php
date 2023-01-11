@@ -5,7 +5,7 @@ use App\Models\Activity;
 class ActivityRepository implements ActivityInterface {
     public function all()
     {
-        return Activity::paginate(10);
+        return Activity::orderByDesc('popularity')->paginate(10);
     }
     public function get($id)
     {
@@ -17,7 +17,7 @@ class ActivityRepository implements ActivityInterface {
     {
         $activities = Activity::where('dateFrom', '<=', $date)
         ->where('dateTo', '>=', $date)
-        ->where('max_quantity_people','>=',$qty_people)
+        ->where('max_quantity_people','=',$qty_people)
         ->orderBy('popularity','DESC')
         ->paginate(10);
         return $activities;

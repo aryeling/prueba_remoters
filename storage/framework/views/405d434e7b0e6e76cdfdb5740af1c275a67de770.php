@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,7 +27,7 @@
         <div class="container-fluid" >
             <div class="row">
                 <div class="col-md-12 text-end">
-                    <a href="{{route('activitiesbooking.show')}}" class="btn btn-link btn-sm">Lista de reservaciones</a>
+                    <a href="<?php echo e(route('activitiesbooking.show')); ?>" class="btn btn-link btn-sm">Lista de reservaciones</a>
                 </div>
             </div>
             <div class="row" id="listActivity">
@@ -38,20 +38,34 @@
                 </div>
             </div>
             <div class="row">
-                <form class="form row" action="{{route('activities.dateqty')}}">
-                    @csrf
+                <form class="form row" action="<?php echo e(route('activities.dateqty')); ?>">
+                    <?php echo csrf_field(); ?>
                     <div class="col-5 col-sm-3 col-md-3">
                         <div class="form-floating mb-3">
-                            <input type="date" class="form-control form-control-sm" min="{{date('Y-m-d')}}" id="activity_date" placeholder="Fecha de Actividad" name="activity_date" required autofocus value="{{($_GET['activity_date']) ?? ''}}">
+                            <input type="date" class="form-control form-control-sm" min="<?php echo e(date('Y-m-d')); ?>" id="activity_date" placeholder="Fecha de Actividad" name="activity_date" required autofocus value="<?php echo e(($_GET['activity_date']) ?? ''); ?>">
                             <label for="activity_date">Fecha Actividad</label>
-                            @error('activity_date') <span class="error text-danger">{{ $message }}</span> @enderror
+                            <?php $__errorArgs = ['activity_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="error text-danger"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     <div class="col-5 col-sm-3 col-md-3">
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control form-control-sm" id="qty_people" min="1" pattern="^[1-9]+" name="qty_people" placeholder="Cantidad de personas" required autofocus value="{{($_GET['qty_people']) ?? ''}}">
+                            <input type="number" class="form-control form-control-sm" id="qty_people" min="1" pattern="^[1-9]+" name="qty_people" placeholder="Cantidad de personas" required autofocus value="<?php echo e(($_GET['qty_people']) ?? ''); ?>">
                             <label for="qty_people">Cantidad de personas</label>
-                            @error('qty_people') <span class="error text-danger">{{ $message }}</span> @enderror
+                            <?php $__errorArgs = ['qty_people'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="error text-danger"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                     <div class="col-2 col-sm-3 col-md-3 py-2">
@@ -67,12 +81,13 @@
                 </form>
             </div>
 
-            @if (Session::get('success'))
+            <?php if(Session::get('success')): ?>
                 <div class="alert alert-success">
-                    {{ Session::get('success') }}
+                    <?php echo e(Session::get('success')); ?>
+
                 </div>
-            @endif
-            @if(!empty($activities) && $activities->count() > 0)
+            <?php endif; ?>
+            <?php if(!empty($activities) && $activities->count() > 0): ?>
                 <div class="row" id="listActivity">
                     <div class="col-md-12 table-responsive">
                         <table class="table table-hover table-striped table-sm">
@@ -89,35 +104,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($activities as $activity )
+                                <?php $__currentLoopData = $activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr class="bg-gray-100 border-b">
-                                        <td class="text-center">{{ $activity->popularity }}</td>
-                                        <td>{{ $activity->title }}</td>
-                                        <td class="text-center">{{ \Carbon\Carbon::parse($activity->dateFrom)->format('d-m-Y')}}</td>
-                                        <td class="text-center">{{ \Carbon\Carbon::parse($activity->dateTo)->format('d-m-Y')  }}</td>
-                                        <td class="text-end">{{ number_format($activity->price_person, 2, ',', '.') }}</td>
-                                        <td class="text-end">{{ $activity->max_quantity_people }}</td>
-                                        <td class="text-end">{{ number_format($activity->price_person * $activity->max_quantity_people, 2, ',', '.') }}</td>
+                                        <td class="text-center"><?php echo e($activity->popularity); ?></td>
+                                        <td><?php echo e($activity->title); ?></td>
+                                        <td class="text-center"><?php echo e(\Carbon\Carbon::parse($activity->dateFrom)->format('d-m-Y')); ?></td>
+                                        <td class="text-center"><?php echo e(\Carbon\Carbon::parse($activity->dateTo)->format('d-m-Y')); ?></td>
+                                        <td class="text-end"><?php echo e(number_format($activity->price_person, 2, ',', '.')); ?></td>
+                                        <td class="text-end"><?php echo e($activity->max_quantity_people); ?></td>
+                                        <td class="text-end"><?php echo e(number_format($activity->price_person * $activity->max_quantity_people, 2, ',', '.')); ?></td>
                                         <td class="text-center">
-                                            <a href="#" onclick="showActivity('{{$activity->id}}')" id="showMore" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Ver más</a>
-                                            @if (Route::currentRouteName() == 'activities.dateqty')
+                                            <a href="#" onclick="showActivity('<?php echo e($activity->id); ?>')" id="showMore" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Ver más</a>
+                                            <?php if(Route::currentRouteName() == 'activities.dateqty'): ?>
                                                 <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-primary btn-sm">Comprar</a>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
-                                        <form id="logout-form" method="POST" action="{{route('activities.buy',['id' => $activity->id ])}}">
-                                            @csrf
-                                            <input type="hidden" id="activity_date" name="activity_date" value="{{($_GET['activity_date']) ?? ''}}">
-                                            <input type="hidden" id="qty_people" name="qty_people" value="{{($_GET['qty_people']) ?? ''}}">
+                                        <form id="logout-form" method="POST" action="<?php echo e(route('activities.buy',['id' => $activity->id ])); ?>">
+                                            <?php echo csrf_field(); ?>
+                                            <input type="hidden" id="activity_date" name="activity_date" value="<?php echo e(($_GET['activity_date']) ?? ''); ?>">
+                                            <input type="hidden" id="qty_people" name="qty_people" value="<?php echo e(($_GET['qty_people']) ?? ''); ?>">
                                         </form>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
-                    {{ $activities->links() }}
+                    <?php echo e($activities->links()); ?>
+
                 </div>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="row" id="listActivity">
                     <div class="col-md-12">
                         <div class="alert alert-danger">
@@ -128,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
 
         </div>
 
@@ -190,9 +206,9 @@
             function showActivity(id){
                 $.ajax({
                     type:"POST",
-                    url: "{{ route('activities.show') }}",
+                    url: "<?php echo e(route('activities.show')); ?>",
                     data: {
-                        "_token": "{{ csrf_token() }}",id: id },
+                        "_token": "<?php echo e(csrf_token()); ?>",id: id },
                     dataType: 'json',
                     success: function(res){
                         let total_price = res.data.activity.price_person * res.data.activity.max_quantity_people;
@@ -212,3 +228,4 @@
         </script>
     </body>
 </html>
+<?php /**PATH /opt/lampp/htdocs/prueba_remoters/resources/views/activities.blade.php ENDPATH**/ ?>
